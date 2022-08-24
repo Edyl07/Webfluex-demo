@@ -7,8 +7,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tech.edyl.webfluxdemo.dto.InputFailedValidationResponse;
 import tech.edyl.webfluxdemo.dto.MultiplyRequestDto;
 import tech.edyl.webfluxdemo.dto.Response;
+import tech.edyl.webfluxdemo.exception.InputValidationException;
 import tech.edyl.webfluxdemo.service.ReactiveMathService;
 
 @Service
@@ -42,5 +44,16 @@ public class RequestHandler {
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(responseMono, Response.class);
+    }
+
+    public Mono<ServerResponse> squareHandlerWithValidation(ServerRequest serverRequest){
+
+        int input = Integer.parseInt(serverRequest.pathVariable("input"));
+        if (input < 10 || input > 20) {
+            return Mono.error(new InputValidationException(input));
+        }
+
+        Flux<Response> responseFlux = this.reactiveMathService.multiplicationTable(input);
+        return ServerResponse.ok().body(responseFlux, Response.class);
     }
 }
