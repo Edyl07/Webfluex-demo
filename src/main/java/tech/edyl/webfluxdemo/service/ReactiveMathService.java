@@ -18,13 +18,6 @@ public class ReactiveMathService {
 
 
     public Flux<Response> multiplicationTable(int input){
-
-//        List<Response> list = IntStream.rangeClosed(1, 10)
-//                .peek(i -> SleepUtil.sleepSeconds(1))
-//                .peek(i -> System.out.println("react-math-service processing : " + i))
-//                .mapToObj(i -> new Response(i * input))
-//                .collect(Collectors.toList());
-//        return Flux.fromIterable(list);
         return Flux.range(1, 10)
                 .delayElements(Duration.ofSeconds(1))
 //                .doOnNext(i -> SleepUtil.sleepSeconds(1))
