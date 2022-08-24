@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tech.edyl.webfluxdemo.dto.MultiplyRequestDto;
 import tech.edyl.webfluxdemo.dto.Response;
 import tech.edyl.webfluxdemo.service.ReactiveMathService;
 
@@ -33,5 +34,13 @@ public class RequestHandler {
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(responseFlux, Response.class);
+    }
+
+    public Mono<ServerResponse> multiplyHandler(ServerRequest serverRequest){
+        Mono<MultiplyRequestDto> requestDtoMono = serverRequest.bodyToMono(MultiplyRequestDto.class);
+        Mono<Response> responseMono = this.reactiveMathService.multiply(requestDtoMono);
+        return ServerResponse.ok()
+                .contentType(MediaType.TEXT_EVENT_STREAM)
+                .body(responseMono, Response.class);
     }
 }
